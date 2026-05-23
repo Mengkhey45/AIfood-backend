@@ -1,0 +1,38 @@
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import corsOptions from "./config/corsOptions.js";
+
+import orderRoutes from "./routes/orderRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
+import analyticsRoutes from "./routes/analyticsRoutes.js";
+import reportRoutes from "./routes/reportRoutes.js";
+import menuRoutes from "./routes/menuRoutes.js";
+import telegramRoutes from "./routes/telegramRoutes.js";
+import { startDailyReportJob } from "./jobs/dailyReportJob.js";
+
+dotenv.config();
+
+const app = express();
+
+app.use(cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
+app.use(express.json());
+
+// Start cron jobs
+startDailyReportJob();
+
+// Routes
+app.use("/api/orders", orderRoutes);
+app.use("/api/ai", aiRoutes);
+app.use("/api/analytics", analyticsRoutes);
+app.use("/api/reports", reportRoutes);
+app.use("/api/menu", menuRoutes);
+app.use("/api/telegram", telegramRoutes);
+
+// Health check
+app.get("/", (req, res) => {
+  res.send("AI Food Order System API is running 🚀");
+});
+
+export default app;

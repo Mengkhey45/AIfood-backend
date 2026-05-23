@@ -9,6 +9,7 @@ import analyticsRoutes from "./routes/analyticsRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
 import menuRoutes from "./routes/menuRoutes.js";
 import telegramRoutes from "./routes/telegramRoutes.js";
+import notificationsRoutes from "./routes/notificationsRoutes.js";
 import { startDailyReportJob } from "./jobs/dailyReportJob.js";
 
 dotenv.config();
@@ -29,6 +30,7 @@ app.use("/api/analytics", analyticsRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/menu", menuRoutes);
 app.use("/api/telegram", telegramRoutes);
+app.use("/api/notifications", notificationsRoutes);
 
 // Health check
 app.get("/", (req, res) => {

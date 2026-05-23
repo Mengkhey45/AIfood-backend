@@ -18,7 +18,7 @@ const app = express();
 
 app.use(cors(corsOptions));
 app.options(/.*/, cors(corsOptions));
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 
 // Start cron jobs
 startDailyReportJob();
@@ -35,6 +35,24 @@ app.use("/api/notifications", notificationsRoutes);
 // Health check
 app.get("/", (req, res) => {
   res.send("AI Food Order System API is running 🚀");
+});
+
+app.use((error, req, res, next) => {
+  if (error?.type === "entity.too.large") {
+    return res.status(413).json({
+      success: false,
+      error: "Request body is too large. Please upload a smaller image.",
+    });
+  }
+
+  if (error instanceof SyntaxError && "body" in error) {
+    return res.status(400).json({
+      success: false,
+      error: "Invalid JSON payload.",
+    });
+  }
+
+  next(error);
 });
 
 export default app;
